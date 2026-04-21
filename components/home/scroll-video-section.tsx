@@ -4,9 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react"
 
 const FRAME_COUNT = 192
 const READY_FRAME_COUNT = 24
+const UI_UPDATE_STEP = 4
 
-function getFrameSrc(index: number) {
-  return `/scroll-frames/frame_${String(index + 1).padStart(4, "0")}.jpg`
+function getFrameBase(index: number) {
+  return `/scroll-frames/frame_${String(index + 1).padStart(4, "0")}`
 }
 
 export function ScrollVideoSection() {
@@ -15,6 +16,7 @@ export function ScrollVideoSection() {
   const imagesRef = useRef<HTMLImageElement[]>([])
   const currentFrameRef = useRef(-1)
   const rafRef = useRef<number | null>(null)
+  const viewportRef = useRef({ width: 0, height: 0, dpr: 1 })
   const [loadedCount, setLoadedCount] = useState(0)
   const [firstFrameLoaded, setFirstFrameLoaded] = useState(false)
   const isReady = firstFrameLoaded && loadedCount >= READY_FRAME_COUNT
@@ -28,17 +30,36 @@ export function ScrollVideoSection() {
   useEffect(() => {
     imagesRef.current = new Array(FRAME_COUNT)
     let cancelled = false
+    let loaded = 0
+    let pendingUi = 0
+
+    const commitLoaded = () => {
+      if (pendingUi === 0) return
+      setLoadedCount(loaded)
+      pendingUi = 0
+    }
 
     for (let i = 0; i < FRAME_COUNT; i += 1) {
       const img = new Image()
-      img.src = getFrameSrc(i)
       img.decoding = "async"
+      const frameBase = getFrameBase(i)
+
       img.onload = () => {
         if (cancelled) return
+        imagesRef.current[i] = img
         if (i === 0) setFirstFrameLoaded(true)
-        setLoadedCount((prev) => prev + 1)
+        loaded += 1
+        pendingUi += 1
+        if (loaded <= READY_FRAME_COUNT || pendingUi >= UI_UPDATE_STEP || loaded === FRAME_COUNT) {
+          commitLoaded()
+        }
       }
-      imagesRef.current[i] = img
+      img.onerror = () => {
+        if (img.src.endsWith(".webp")) {
+          img.src = `${frameBase}.jpg`
+        }
+      }
+      img.src = `${frameBase}.webp`
     }
 
     return () => {
@@ -49,8 +70,19 @@ export function ScrollVideoSection() {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext("2d")
+    const ctx = canvas.getContext("2d", { alpha: false })
     if (!ctx) return
+
+    const resizeCanvas = () => {
+      const { innerWidth, innerHeight, devicePixelRatio } = window
+      viewportRef.current = { width: innerWidth, height: innerHeight, dpr: devicePixelRatio }
+      canvas.width = innerWidth * devicePixelRatio
+      canvas.height = innerHeight * devicePixelRatio
+      canvas.style.width = `${innerWidth}px`
+      canvas.style.height = `${innerHeight}px`
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
+      currentFrameRef.current = -1
+    }
 
     const drawFrame = (frameIndex: number) => {
       if (frameIndex === currentFrameRef.current) return
@@ -58,13 +90,7 @@ export function ScrollVideoSection() {
       if (!img || !img.complete) return
 
       currentFrameRef.current = frameIndex
-      const { innerWidth, innerHeight, devicePixelRatio } = window
-      canvas.width = innerWidth * devicePixelRatio
-      canvas.height = innerHeight * devicePixelRatio
-      canvas.style.width = `${innerWidth}px`
-      canvas.style.height = `${innerHeight}px`
-
-      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
+      const { width: innerWidth, height: innerHeight } = viewportRef.current
       ctx.clearRect(0, 0, innerWidth, innerHeight)
 
       const mobile = innerWidth < 768
@@ -91,10 +117,11 @@ export function ScrollVideoSection() {
     }
 
     const onResize = () => {
-      currentFrameRef.current = -1
+      resizeCanvas()
       updateFromScroll()
     }
 
+    resizeCanvas()
     updateFromScroll()
     window.addEventListener("scroll", updateFromScroll, { passive: true })
     window.addEventListener("resize", onResize)
