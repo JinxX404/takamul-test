@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 
 const FRAME_COUNT = 192
+const READY_FRAME_COUNT = 24
 
 function getFrameSrc(index: number) {
   return `/scroll-frames/frame_${String(index + 1).padStart(4, "0")}.jpg`
@@ -15,11 +16,13 @@ export function ScrollVideoSection() {
   const currentFrameRef = useRef(-1)
   const rafRef = useRef<number | null>(null)
   const [loadedCount, setLoadedCount] = useState(0)
-  const isReady = loadedCount >= FRAME_COUNT
+  const [firstFrameLoaded, setFirstFrameLoaded] = useState(false)
+  const isReady = firstFrameLoaded && loadedCount >= READY_FRAME_COUNT
+  const progressCount = isReady ? FRAME_COUNT : READY_FRAME_COUNT
 
   const loadingPercent = useMemo(
-    () => Math.min(100, Math.round((loadedCount / FRAME_COUNT) * 100)),
-    [loadedCount]
+    () => Math.min(100, Math.round((loadedCount / progressCount) * 100)),
+    [loadedCount, progressCount]
   )
 
   useEffect(() => {
@@ -31,7 +34,9 @@ export function ScrollVideoSection() {
       img.src = getFrameSrc(i)
       img.decoding = "async"
       img.onload = () => {
-        if (!cancelled) setLoadedCount((prev) => prev + 1)
+        if (cancelled) return
+        if (i === 0) setFirstFrameLoaded(true)
+        setLoadedCount((prev) => prev + 1)
       }
       imagesRef.current[i] = img
     }
