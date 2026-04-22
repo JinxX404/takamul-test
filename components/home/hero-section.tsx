@@ -193,118 +193,6 @@ export function HeroSection() {
         {/* 3. Global Scanner Grid and FX Layout */}
         <div className="absolute inset-0 z-[3] opacity-35 pointer-events-none [background-image:linear-gradient(hsl(var(--accent)/0.18)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--accent)/0.18)_1px,transparent_1px)] [background-size:44px_44px]" />
 
-        {/* 4. The Vertical Laser Scanner Line */}
-        <motion.div
-          className="pointer-events-none absolute top-0 bottom-0 w-[4px] bg-accent shadow-[0_0_30px_6px_hsl(var(--accent))] z-[4]"
-          style={{
-            left: isRtl 
-                ? useMotionTemplate`${clipValue}%` 
-                : useMotionTemplate`${ltrLinePos}%`,
-            opacity: useTransform(scrollYProgress, [0.05, 0.1, 0.85, 0.9], [0, 1, 1, 0]),
-            translateX: "-50%"
-          }}
-        />
-
-        {/* 5. Scroll-Masked Foreground TEXT Overlay */}
-        <motion.div
-          className="absolute inset-0 z-[12] pointer-events-none flex items-center overflow-hidden"
-          style={{ clipPath: resolvedClipPath }}
-        >
-          <div className="container mx-auto px-4 pt-7">
-            <motion.div
-              className="max-w-2xl"
-              style={{ x: smoothX, y: smoothY }}
-            >
-              {/* Invisible Placeholder to align with Base Badge */}
-              <div
-                className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground backdrop-blur-sm px-4 py-2 rounded-full mb-6 invisible opacity-0"
-              >
-                <Shield className="h-4 w-4 text-accent" />
-                <span className="text-sm font-medium text-primary-foreground">
-                  {isEnglish ? "Trusted Leader in Security Systems" : "الشركة الرائدة في الأنظمة الأمنية"}
-                </span>
-              </div>
-
-              {/* MASKED HEADING */}
-              <div className="mb-6 space-y-2">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance">
-                  {isEnglish ? "Your security" : "أمانك"}
-                </h1>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance">
-                  <span className="text-accent">{isEnglish ? "in the palm of your hand." : "في راحة يدك."}</span>
-                </h1>
-              </div>
-
-              {/* MASKED DESCRIPTION */}
-              <p className="text-lg text-primary-foreground/80 mb-8 leading-relaxed max-w-xl">
-                 {isEnglish 
-                  ? "We connect the latest technologies to give you full control over your facility's security from one place." 
-                  : "نربط أحدث التقنيات لنمنحك سيطرة كاملة على أمان منشأتك من مكان واحد."}
-              </p>
-
-              {/* INVISIBLE IDENTICAL DOM PLACEHOLDERS TO GUARANTEE PIXEL-PERFECT ALIGNMENT */}
-              <div className="invisible opacity-0 pointer-events-none select-none" aria-hidden="true">
-                <div className="mb-7 inline-flex items-center rounded-2xl border p-1.5 backdrop-blur">
-                  {(["home", "business", "enterprise"] as const).map((mode) => {
-                    const modeData = modeContent[mode]
-                    return (
-                      <button key={mode} className="inline-flex items-center gap-2 rounded-xl px-3 md:px-4 py-2 text-xs md:text-sm font-semibold">
-                        <modeData.icon className="h-4 w-4" />
-                        <span>{modeData.label}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-4 relative">
-                  <Button size="lg" className="shadow-xl">
-                    <span className="gap-2 flex">
-                       {activeModeData.cta}
-                       <ArrowLeft className="h-4 w-4" />
-                    </span>
-                  </Button>
-                  <Button size="lg" className="border-primary-foreground/30 text-primary-foreground">
-                    <span className="gap-2 shrink-0 flex">
-                      <Phone className="h-4 w-4" />
-                      {isEnglish ? "WhatsApp" : "واتساب"}
-                    </span>
-                  </Button>
-                </div>
-
-                <div className="mt-5 flex flex-wrap items-center gap-2.5">
-                  <span className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs md:text-sm font-medium">
-                    <Radar className="h-3.5 w-3.5 text-accent" />
-                    {isEnglish ? "View Packages" : "شاهد الباقات"}
-                  </span>
-                  <span className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs md:text-sm font-medium">
-                    <Shield className="h-3.5 w-3.5 text-accent" />
-                    {isEnglish ? "View Projects" : "شاهد المشاريع"}
-                  </span>
-                  <span className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs md:text-sm font-medium">
-                    <Phone className="h-3.5 w-3.5 text-accent" />
-                    {isEnglish ? "Contact Us" : "تواصل معنا"}
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-6 mt-10 pt-8 border-t border-primary-foreground/20">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-10 w-10" />
-                    <span className="text-sm">{isEnglish ? "Full Warranty" : "ضمان شامل"}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-10 w-10" />
-                    <span className="text-sm">{isEnglish ? "Technical Support" : "دعم فني متواصل"}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-10 w-10" />
-                    <span className="text-sm">{isEnglish ? "Completed Projects" : "مشروع منجز"}</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10 pt-7">
         <motion.div
@@ -316,7 +204,7 @@ export function HeroSection() {
         >
           {/* Badge */}
           <motion.div
-            className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground backdrop-blur-sm px-4 py-2 rounded-full mb-6"
+            className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground backdrop-blur-sm px-4 py-2 rounded-full mb-8 lg:mb-10"
             variants={{
               initial: { opacity: 0, y: 18 },
               animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
@@ -328,39 +216,73 @@ export function HeroSection() {
             </span>
           </motion.div>
 
-          <motion.div style={{ clipPath: resolvedBaseClipPath }}>
-            {/* Heading */}
-            <div className="mb-6 space-y-2">
-              {heroLines.map((line) => (
-                <motion.h1
-                  key={line}
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance"
-                  variants={{
-                    initial: { opacity: 0, y: 22, filter: "blur(4px)" },
-                    animate: {
-                      opacity: 1,
-                      y: 0,
-                      filter: "blur(0px)",
-                      transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] },
-                    },
-                  }}
-                >
-                  <span className={line === heroLines[1] ? "text-accent" : ""}>{line}</span>
-                </motion.h1>
-              ))}
-            </div>
+          {/* DUAL MASKED TEXT CONTAINER */}
+          <div className="relative mb-6 pb-2">
+            
+            {/* 1. Base Old Text (Wipes Away) */}
+            <motion.div style={{ clipPath: resolvedBaseClipPath }}>
+              <div className="mb-6 space-y-2">
+                {heroLines.map((line) => (
+                  <motion.h1
+                    key={line}
+                    className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance"
+                    variants={{
+                      initial: { opacity: 0, y: 22, filter: "blur(4px)" },
+                      animate: {
+                        opacity: 1,
+                        y: 0,
+                        filter: "blur(0px)",
+                        transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] },
+                      },
+                    }}
+                  >
+                    <span className={line === heroLines[1] ? "text-accent" : ""}>{line}</span>
+                  </motion.h1>
+                ))}
+              </div>
+              <motion.p
+                className="text-lg text-primary-foreground/80 mb-8 leading-relaxed max-w-xl pr-4"
+                variants={{
+                  initial: { opacity: 0, y: 18 },
+                  animate: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+                }}
+              >
+                {activeModeData.description}
+              </motion.p>
+            </motion.div>
 
-            {/* Description */}
-            <motion.p
-              className="text-lg text-primary-foreground/80 mb-8 leading-relaxed max-w-xl"
-              variants={{
-                initial: { opacity: 0, y: 18 },
-                animate: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
-              }}
+            {/* 2. Foreground New Text (Wipes In) */}
+            <motion.div 
+              className="absolute inset-0 z-10"
+              style={{ clipPath: resolvedClipPath }}
             >
-              {activeModeData.description}
-            </motion.p>
-          </motion.div>
+              <div className="mb-6 space-y-2">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance">
+                  {isEnglish ? "Your security" : "أمانك"}
+                </h1>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance">
+                  <span className="text-accent">{isEnglish ? "in the palm of your hand." : "في راحة يدك."}</span>
+                </h1>
+              </div>
+              <p className="text-lg text-primary-foreground/80 mb-8 leading-relaxed max-w-xl pr-4">
+                 {isEnglish 
+                  ? "We connect the latest technologies to give you full control over your facility's security from one place." 
+                  : "نربط أحدث التقنيات لنمنحك سيطرة كاملة على أمان منشأتك من مكان واحد."}
+              </p>
+            </motion.div>
+
+            {/* 3. Local Text Laser Tracker */}
+            <motion.div
+              className="pointer-events-none absolute top-[-10%] bottom-[-10%] w-[3px] bg-accent shadow-[0_0_20px_4px_hsl(var(--accent))] z-20"
+              style={{
+                left: useMotionTemplate`${isRtl ? clipValue : inverseClipValue}%`,
+                opacity: useTransform(scrollYProgress, [0.05, 0.1, 0.85, 0.9], [0, 1, 1, 0]),
+                translateX: "-50%"
+              }}
+            />
+          </div>
+
+
 
           {/* Interactive Security Mode Switch */}
           <motion.div
