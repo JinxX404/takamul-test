@@ -217,7 +217,7 @@ export function HeroSection() {
           </motion.div>
 
           {/* DUAL MASKED TEXT CONTAINER */}
-          <div className="relative mb-6 pb-2">
+          <div className="relative mb-6 pb-2 w-fit max-w-full">
             
             {/* 1. Base Old Text (Wipes Away) */}
             <motion.div style={{ clipPath: resolvedBaseClipPath }}>
@@ -273,10 +273,10 @@ export function HeroSection() {
 
             {/* 3. Local Text Laser Tracker */}
             <motion.div
-              className="pointer-events-none absolute top-[-10%] bottom-[-10%] w-[3px] bg-accent shadow-[0_0_20px_4px_hsl(var(--accent))] z-20"
+              className="pointer-events-none absolute top-[-10%] bottom-[-10%] w-[3px] bg-accent shadow-[0_0_20px_4px_hsl(var(--accent))] mix-blend-screen z-20"
               style={{
                 left: useMotionTemplate`${isRtl ? clipValue : inverseClipValue}%`,
-                opacity: useTransform(scrollYProgress, [0.05, 0.1, 0.85, 0.9], [0, 1, 1, 0]),
+                opacity: useTransform(clipValue, [0, 0.1, 99.9, 100], [0, 1, 1, 0]),
                 translateX: "-50%"
               }}
             />
