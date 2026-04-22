@@ -113,6 +113,11 @@ export function HeroSection() {
   const clipLTR = useMotionTemplate`inset(0 ${clipValue}% 0 0)`
   const resolvedClipPath = isRtl ? clipRTL : clipLTR
 
+  const inverseClipValue = useTransform(clipValue, v => 100 - v)
+  const baseClipRTL = useMotionTemplate`inset(0 ${inverseClipValue}% 0 0)`
+  const baseClipLTR = useMotionTemplate`inset(0 0 0 ${inverseClipValue}%)`
+  const resolvedBaseClipPath = isRtl ? baseClipRTL : baseClipLTR
+
   const onHeroMouseMove = (event: React.MouseEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect()
     const nx = (event.clientX - rect.left) / rect.width - 0.5
@@ -167,7 +172,7 @@ export function HeroSection() {
         {/* 1. Base Empty Background Container */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/scroll-frames/frame_0001.webp')" }}
+          style={{ backgroundImage: "url('/scroll-frames/frame_0192.webp')" }}
         >
           {/* Base gradient to ensure text readability */}
           <div className="absolute inset-0 bg-gradient-to-l from-primary/95 via-primary/80 to-primary/55" />
@@ -177,7 +182,7 @@ export function HeroSection() {
         <motion.div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat z-[2]"
           style={{
-            backgroundImage: "url('/scroll-frames/frame_0192.webp')",
+            backgroundImage: "url('/after.png')",
             clipPath: resolvedClipPath
           }}
         >
@@ -200,8 +205,108 @@ export function HeroSection() {
           }}
         />
 
+        {/* 5. Scroll-Masked Foreground TEXT Overlay */}
+        <motion.div
+          className="absolute inset-0 z-[12] pointer-events-none flex items-center overflow-hidden"
+          style={{ clipPath: resolvedClipPath }}
+        >
+          <div className="container mx-auto px-4 pt-7">
+            <motion.div
+              className="max-w-2xl"
+              style={{ x: smoothX, y: smoothY }}
+            >
+              {/* Invisible Placeholder to align with Base Badge */}
+              <div
+                className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground backdrop-blur-sm px-4 py-2 rounded-full mb-6 invisible opacity-0"
+              >
+                <Shield className="h-4 w-4 text-accent" />
+                <span className="text-sm font-medium text-primary-foreground">
+                  {isEnglish ? "Trusted Leader in Security Systems" : "الشركة الرائدة في الأنظمة الأمنية"}
+                </span>
+              </div>
+
+              {/* MASKED HEADING */}
+              <div className="mb-6 space-y-2">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance">
+                  {isEnglish ? "Your security" : "أمانك"}
+                </h1>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance">
+                  <span className="text-accent">{isEnglish ? "in the palm of your hand." : "في راحة يدك."}</span>
+                </h1>
+              </div>
+
+              {/* MASKED DESCRIPTION */}
+              <p className="text-lg text-primary-foreground/80 mb-8 leading-relaxed max-w-xl">
+                 {isEnglish 
+                  ? "We connect the latest technologies to give you full control over your facility's security from one place." 
+                  : "نربط أحدث التقنيات لنمنحك سيطرة كاملة على أمان منشأتك من مكان واحد."}
+              </p>
+
+              {/* INVISIBLE IDENTICAL DOM PLACEHOLDERS TO GUARANTEE PIXEL-PERFECT ALIGNMENT */}
+              <div className="invisible opacity-0 pointer-events-none select-none" aria-hidden="true">
+                <div className="mb-7 inline-flex items-center rounded-2xl border p-1.5 backdrop-blur">
+                  {(["home", "business", "enterprise"] as const).map((mode) => {
+                    const modeData = modeContent[mode]
+                    return (
+                      <button key={mode} className="inline-flex items-center gap-2 rounded-xl px-3 md:px-4 py-2 text-xs md:text-sm font-semibold">
+                        <modeData.icon className="h-4 w-4" />
+                        <span>{modeData.label}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 relative">
+                  <Button size="lg" className="shadow-xl">
+                    <span className="gap-2 flex">
+                       {activeModeData.cta}
+                       <ArrowLeft className="h-4 w-4" />
+                    </span>
+                  </Button>
+                  <Button size="lg" className="border-primary-foreground/30 text-primary-foreground">
+                    <span className="gap-2 shrink-0 flex">
+                      <Phone className="h-4 w-4" />
+                      {isEnglish ? "WhatsApp" : "واتساب"}
+                    </span>
+                  </Button>
+                </div>
+
+                <div className="mt-5 flex flex-wrap items-center gap-2.5">
+                  <span className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs md:text-sm font-medium">
+                    <Radar className="h-3.5 w-3.5 text-accent" />
+                    {isEnglish ? "View Packages" : "شاهد الباقات"}
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs md:text-sm font-medium">
+                    <Shield className="h-3.5 w-3.5 text-accent" />
+                    {isEnglish ? "View Projects" : "شاهد المشاريع"}
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs md:text-sm font-medium">
+                    <Phone className="h-3.5 w-3.5 text-accent" />
+                    {isEnglish ? "Contact Us" : "تواصل معنا"}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-6 mt-10 pt-8 border-t border-primary-foreground/20">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-10 w-10" />
+                    <span className="text-sm">{isEnglish ? "Full Warranty" : "ضمان شامل"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-10 w-10" />
+                    <span className="text-sm">{isEnglish ? "Technical Support" : "دعم فني متواصل"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-10 w-10" />
+                    <span className="text-sm">{isEnglish ? "Completed Projects" : "مشروع منجز"}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+
       {/* Content */}
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10 pt-7">
         <motion.div
           className="max-w-2xl"
           variants={containerStagger}
@@ -223,37 +328,39 @@ export function HeroSection() {
             </span>
           </motion.div>
 
-          {/* Heading */}
-          <div className="mb-6 space-y-2">
-            {heroLines.map((line) => (
-              <motion.h1
-                key={line}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance"
-                variants={{
-                  initial: { opacity: 0, y: 22, filter: "blur(4px)" },
-                  animate: {
-                    opacity: 1,
-                    y: 0,
-                    filter: "blur(0px)",
-                    transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] },
-                  },
-                }}
-              >
-                <span className={line === heroLines[1] ? "text-accent" : ""}>{line}</span>
-              </motion.h1>
-            ))}
-          </div>
+          <motion.div style={{ clipPath: resolvedBaseClipPath }}>
+            {/* Heading */}
+            <div className="mb-6 space-y-2">
+              {heroLines.map((line) => (
+                <motion.h1
+                  key={line}
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight text-balance"
+                  variants={{
+                    initial: { opacity: 0, y: 22, filter: "blur(4px)" },
+                    animate: {
+                      opacity: 1,
+                      y: 0,
+                      filter: "blur(0px)",
+                      transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] },
+                    },
+                  }}
+                >
+                  <span className={line === heroLines[1] ? "text-accent" : ""}>{line}</span>
+                </motion.h1>
+              ))}
+            </div>
 
-          {/* Description */}
-          <motion.p
-            className="text-lg text-primary-foreground/80 mb-8 leading-relaxed max-w-xl"
-            variants={{
-              initial: { opacity: 0, y: 18 },
-              animate: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
-            }}
-          >
-            {activeModeData.description}
-          </motion.p>
+            {/* Description */}
+            <motion.p
+              className="text-lg text-primary-foreground/80 mb-8 leading-relaxed max-w-xl"
+              variants={{
+                initial: { opacity: 0, y: 18 },
+                animate: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+              }}
+            >
+              {activeModeData.description}
+            </motion.p>
+          </motion.div>
 
           {/* Interactive Security Mode Switch */}
           <motion.div
