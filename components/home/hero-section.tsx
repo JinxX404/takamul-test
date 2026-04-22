@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Shield, Phone, ArrowLeft, CheckCircle2, Home, Building2, Factory, Radar } from "lucide-react"
-import { AnimatePresence, motion, useInView, useMotionValue, useSpring } from "framer-motion"
+import { AnimatePresence, motion, useInView, useMotionValue, useSpring, useScroll, useTransform, useMotionTemplate } from "framer-motion"
 import { containerStagger, slowScaleUp } from "@/lib/motion-variants"
 import { buildWhatsAppUrl } from "@/lib/config/contact"
 
@@ -98,6 +98,21 @@ export function HeroSection() {
 
   const activeModeData = modeContent[activeMode]
 
+  const isRtl = !isEnglish
+  const sectionRef = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"]
+  })
+
+  // The mask percentage shrinks from 100% to 0% clipping as you scroll through the 10%-85% mark of the hero
+  const clipValue = useTransform(scrollYProgress, [0.1, 0.85], [100, 0])
+  const ltrLinePos = useTransform(scrollYProgress, [0.1, 0.85], [0, 100])
+
+  const clipRTL = useMotionTemplate`inset(0 0 0 ${clipValue}%)`
+  const clipLTR = useMotionTemplate`inset(0 ${clipValue}% 0 0)`
+  const resolvedClipPath = isRtl ? clipRTL : clipLTR
+
   const onHeroMouseMove = (event: React.MouseEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect()
     const nx = (event.clientX - rect.left) / rect.width - 0.5
@@ -117,59 +132,73 @@ export function HeroSection() {
   }, [])
 
   return (
-    <section
-      id="hero-shield-scan"
-      className="relative min-h-[680px] flex items-center overflow-hidden"
-      onMouseMove={onHeroMouseMove}
-      onMouseLeave={onHeroMouseLeave}
-    >
-      <AnimatePresence>
-        {showBootOverlay && (
-          <motion.div
-            className="absolute inset-0 z-30 bg-primary/95 backdrop-blur-sm"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,hsl(var(--accent)/0.22)_45%,transparent_100%)] animate-pulse" />
-            <div className="container mx-auto h-full px-4 flex flex-col items-center justify-center gap-5 text-primary-foreground">
-              <p className="text-sm md:text-base tracking-[0.22em] uppercase text-accent font-semibold">
-                {isEnglish ? "Security Core Initializing" : "جاري تهيئة نظام الحماية"}
-              </p>
-              <div className="w-[240px] md:w-[320px] h-[3px] bg-primary-foreground/20 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-accent/60 via-accent to-accent/60"
-                  initial={{ x: "-100%" }}
-                  animate={{ x: "0%" }}
-                  transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-                />
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Background Image */}
-      <motion.div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url('/desktop_slider.jpeg')",
-        }}
-        variants={slowScaleUp}
-        initial="initial"
-        animate="animate"
+    <section ref={sectionRef} id="hero-shield-scan" className="relative h-[250vh] bg-primary">
+      <div
+        className="sticky top-0 h-screen w-full flex items-center overflow-hidden"
+        onMouseMove={onHeroMouseMove}
+        onMouseLeave={onHeroMouseLeave}
       >
-        <div className="absolute inset-0 bg-gradient-to-l from-primary/95 via-primary/80 to-primary/55" />
-        <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(hsl(var(--accent)/0.18)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--accent)/0.18)_1px,transparent_1px)] [background-size:44px_44px]" />
+        <AnimatePresence>
+          {showBootOverlay && (
+            <motion.div
+              className="absolute inset-0 z-30 bg-primary/95 backdrop-blur-sm"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,hsl(var(--accent)/0.22)_45%,transparent_100%)] animate-pulse" />
+              <div className="container mx-auto h-full px-4 flex flex-col items-center justify-center gap-5 text-primary-foreground">
+                <p className="text-sm md:text-base tracking-[0.22em] uppercase text-accent font-semibold">
+                  {isEnglish ? "Security Core Initializing" : "جاري تهيئة نظام الحماية"}
+                </p>
+                <div className="w-[240px] md:w-[320px] h-[3px] bg-primary-foreground/20 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-accent/60 via-accent to-accent/60"
+                    initial={{ x: "-100%" }}
+                    animate={{ x: "0%" }}
+                    transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* One-time precision scan line */}
+        {/* 1. Base Empty Background Container */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/scroll-frames/frame_0001.webp')" }}
+        >
+          {/* Base gradient to ensure text readability */}
+          <div className="absolute inset-0 bg-gradient-to-l from-primary/95 via-primary/80 to-primary/55" />
+        </div>
+
+        {/* 2. Scroll-Masked Populated Foreground */}
         <motion.div
-          className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-95"
-          initial={{ y: "-20%" }}
-          animate={{ y: "120%" }}
-          transition={{ duration: 1.8, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-[2]"
+          style={{
+            backgroundImage: "url('/scroll-frames/frame_0192.webp')",
+            clipPath: resolvedClipPath
+          }}
+        >
+          {/* Gradient overlay specifically for the revealed part so it visually matches */}
+          <div className="absolute inset-0 bg-gradient-to-l from-primary/95 via-primary/80 to-primary/55 opacity-90" />
+        </motion.div>
+
+        {/* 3. Global Scanner Grid and FX Layout */}
+        <div className="absolute inset-0 z-[3] opacity-35 pointer-events-none [background-image:linear-gradient(hsl(var(--accent)/0.18)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--accent)/0.18)_1px,transparent_1px)] [background-size:44px_44px]" />
+
+        {/* 4. The Vertical Laser Scanner Line */}
+        <motion.div
+          className="pointer-events-none absolute top-0 bottom-0 w-[4px] bg-accent shadow-[0_0_30px_6px_hsl(var(--accent))] z-[4]"
+          style={{
+            left: isRtl 
+                ? useMotionTemplate`${clipValue}%` 
+                : useMotionTemplate`${ltrLinePos}%`,
+            opacity: useTransform(scrollYProgress, [0.05, 0.1, 0.85, 0.9], [0, 1, 1, 0]),
+            translateX: "-50%"
+          }}
         />
-      </motion.div>
 
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
@@ -350,6 +379,7 @@ export function HeroSection() {
             </motion.div>
           </motion.div>
         </motion.div>
+      </div>
       </div>
     </section>
   )
