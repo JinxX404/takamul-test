@@ -159,26 +159,6 @@ export function ProcessSection() {
                     : step.description}
                 </p>
 
-                {index === steps.length - 1 && (
-                  <AnimatePresence>
-                    {journeyCompleted && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.35 }}
-                        className="mt-5"
-                      >
-                        <Button size="sm" variant="secondary" asChild>
-                          <Link href={`/${currentLang}/quote`} className="gap-2">
-                            {isEnglish ? "Instant Quote" : "عرض سعر فوري"}
-                            <ArrowLeft className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                )}
               </div>
 
               {/* Mobile Vertical Connecting Line */}
