@@ -283,18 +283,6 @@ export function HeroSection() {
               </Link>
             </Button>
 
-            <motion.div
-              className="absolute -bottom-14 md:bottom-auto md:-top-5 md:-left-14 lg:-left-20"
-              animate={{ scale: [1, 1.03, 1], opacity: [0.9, 1, 0.9] }}
-              transition={{ duration: 2.6, ease: "easeInOut", repeat: Infinity }}
-            >
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/60 bg-background/95 px-4 py-2 shadow-lg shadow-accent/20">
-                <CheckCircle2 className="h-4 w-4 text-accent" />
-                <span className="text-xs md:text-sm font-semibold text-primary">
-                  {isEnglish ? "Certified Installation" : "تركيب معتمد"}
-                </span>
-              </div>
-            </motion.div>
           </motion.div>
 
           {/* Quick Hero Actions */}
@@ -320,13 +308,11 @@ export function HeroSection() {
               {isEnglish ? "View Projects" : "شاهد المشاريع"}
             </Link>
             <Link
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`/${currentLang}/contact`}
               className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-4 py-2 text-xs md:text-sm font-medium text-primary-foreground hover:bg-primary-foreground/20 transition-colors"
             >
               <Phone className="h-3.5 w-3.5 text-accent" />
-              {isEnglish ? "Instant WhatsApp" : "واتساب فوري"}
+              {isEnglish ? "Contact Us" : "تواصل معنا"}
             </Link>
           </motion.div>
 

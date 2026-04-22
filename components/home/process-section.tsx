@@ -86,18 +86,9 @@ export function ProcessSection() {
             }}
           />
 
-          <div className="lg:hidden absolute top-8 bottom-8 right-8 w-[2px] bg-primary-foreground/20" />
-          <motion.div
-            className="lg:hidden absolute top-8 bottom-8 right-8 w-[2px] bg-gradient-to-b from-accent to-accent/40 shadow-[0_0_16px_hsl(var(--accent)/0.45)]"
-            style={{
-              scaleY: mobileLineScale,
-              originY: 0,
-            }}
-          />
-
         {/* Steps */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10"
+          className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-8 relative z-10"
           initial="initial"
           whileInView="animate"
           viewport={{ once: true, margin: "-100px" }}
@@ -122,10 +113,10 @@ export function ProcessSection() {
                 },
               }}
             >
-              <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="relative z-10 flex flex-col items-center text-center pb-2">
                 {/* Icon Circle */}
                 <motion.div 
-                  className="flex h-24 w-24 items-center justify-center rounded-full bg-accent/20 border-2 border-accent mb-6"
+                  className="flex h-24 w-24 items-center justify-center rounded-full bg-accent/20 border-2 border-accent mb-6 relative"
                   whileHover={{ scale: 1.03 }}
                   transition={{ duration: 0.25 }}
                 >
@@ -156,7 +147,7 @@ export function ProcessSection() {
                 </h3>
                 
                 {/* Description */}
-                <p className="text-primary-foreground/70 text-sm leading-relaxed">
+                <p className="text-primary-foreground/70 text-sm leading-relaxed max-w-[260px] mx-auto">
                   {isEnglish
                     ? index === 0
                       ? "Our experts inspect your site and define exact security priorities."
@@ -189,6 +180,21 @@ export function ProcessSection() {
                   </AnimatePresence>
                 )}
               </div>
+
+              {/* Mobile Vertical Connecting Line */}
+              {index !== steps.length - 1 && (
+                <div className="lg:hidden flex justify-center py-4">
+                  <div className="h-16 w-[3px] bg-primary-foreground/20 rounded-full relative overflow-hidden">
+                    <motion.div 
+                      className="absolute top-0 w-full bg-gradient-to-b from-accent to-accent/40"
+                      initial={{ height: 0 }}
+                      whileInView={{ height: "100%" }}
+                      viewport={{ once: true, margin: "-10% 0px" }}
+                      transition={{ duration: 0.8, delay: 0.3 }}
+                    />
+                  </div>
+                </div>
+              )}
             </motion.div>
           ))}
         </motion.div>

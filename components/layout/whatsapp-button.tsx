@@ -16,7 +16,7 @@ export function WhatsAppButton() {
       aria-label="تواصل عبر واتساب"
     >
       <MessageCircle className="h-6 w-6" />
-      <span className="font-semibold hidden sm:inline">واتساب فوري</span>
+      <span className="font-semibold hidden sm:inline">واتساب</span>
     </a>
   )
 }
