@@ -1,6 +1,5 @@
 import { WhatsAppButton } from "@/components/layout/whatsapp-button"
 import { HeroSection } from "@/components/home/hero-section"
-import { ScrollVideoSection } from "@/components/home/scroll-video-section"
 import { SolutionsSection } from "@/components/home/solutions-section"
 import { PackagesSection } from "@/components/home/packages-section"
 import { ProcessSection } from "@/components/home/process-section"
@@ -50,7 +49,6 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <ScrollVideoSection />
       <SolutionsSection />
       <PackagesSection />
       <ProcessSection />

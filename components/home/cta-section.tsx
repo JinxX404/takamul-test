@@ -2,21 +2,20 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Phone, ArrowLeft } from "lucide-react"
+import { Phone, ArrowLeft, ShieldCheck } from "lucide-react"
 import { motion } from "framer-motion"
 import { fadeUp, containerStagger } from "@/lib/motion-variants"
+import { buildWhatsAppUrl } from "@/lib/config/contact"
 
 export function CTASection() {
+  const whatsappUrl = buildWhatsAppUrl("مرحباً، أريد عرض سعر سريع")
+
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-24 overflow-hidden" id="final-cta-v2">
       {/* Background */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
-        }}
-      >
-        <div className="absolute inset-0 bg-primary/90" />
+      <div className="absolute inset-0 bg-primary/95">
+        <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(hsl(var(--accent)/0.16)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--accent)/0.16)_1px,transparent_1px)] [background-size:46px_46px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_30%,hsl(var(--accent)/0.22),transparent_35%),radial-gradient(circle_at_85%_70%,hsl(var(--accent)/0.16),transparent_35%)]" />
       </div>
 
       {/* Decorative Elements */}
@@ -42,41 +41,50 @@ export function CTASection() {
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
         <motion.div 
-          className="max-w-3xl mx-auto text-center"
+          className="max-w-4xl mx-auto text-center rounded-3xl border border-primary-foreground/20 bg-primary-foreground/5 backdrop-blur px-6 md:px-12 py-10 md:py-14"
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
           variants={containerStagger}
         >
+          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full bg-accent/20 px-4 py-2 mb-6">
+            <ShieldCheck className="h-4 w-4 text-accent" />
+            <span className="text-xs md:text-sm font-semibold text-primary-foreground">Security Command Ready</span>
+          </motion.div>
+
           <motion.h2 
             className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-6 text-balance"
             variants={fadeUp}
           >
-            حلولنا الأمنية الذكية، لمستقبل آمن
+            جهز نظامك الأمني اليوم
           </motion.h2>
           <motion.p 
             className="text-lg text-primary-foreground/80 mb-8 leading-relaxed"
             variants={fadeUp}
           >
-            نحن هنا لنحمي ما يهمك بأحدث التقنيات وأفضل الكوادر الفنية.
+            احصل على خطة حماية دقيقة لموقعك مع عرض سعر واضح وزمن تنفيذ سريع.
           </motion.p>
           <motion.div 
             className="flex flex-wrap items-center justify-center gap-4"
             variants={fadeUp}
           >
-            <Button size="lg" variant="secondary" asChild className="shadow-xl shadow-black/20 hover:scale-105 transition-transform">
-              <Link href="/quote" className="gap-2">
+            <Button size="lg" variant="secondary" asChild className="shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5">
+              <Link href="/ar/quote" className="gap-2">
                 اطلب عرض سعر
                 <ArrowLeft className="h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:scale-105 transition-transform" asChild>
-              <Link href="/contact" className="gap-2">
+            <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 transition-all hover:-translate-y-0.5" asChild>
+              <Link href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="gap-2">
                 <Phone className="h-4 w-4" />
-                تواصل معنا
+                واتساب مباشر
               </Link>
             </Button>
           </motion.div>
+
+          <motion.p variants={fadeUp} className="text-primary-foreground/70 text-sm mt-6">
+            استجابة أولية خلال 10 دقائق في أوقات العمل.
+          </motion.p>
         </motion.div>
       </div>
     </section>
